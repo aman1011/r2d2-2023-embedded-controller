@@ -21,10 +21,10 @@ from i2c_lcd import I2cLcd
 from pyrf24 import RF24, RF24_PA_LOW
 
 #List of selected sounds
-hums = ["/home/pi/Desktop/Jedi/hum/HUM1.mp3", "/home/pi/Desktop/Jedi/hum/HUM7.mp3", "/home/pi/Desktop/Jedi/hum/HUM13.mp3", "/home/pi/Desktop/Jedi/hum/HUM17.mp3","/home/pi/Desktop/Jedi/hum/HUM23.mp3"]
-screams = ["/home/pi/Desktop/Jedi/scream/SCREAM1.mp3", "/home/pi/Desktop/Jedi/scream/SCREAM2.mp3", "/home/pi/Desktop/Jedi/scream/SCREAM3.mp3", "/home/pi/Desktop/Jedi/scream/SCREAM4.mp3"]
-sents = ["/home/pi/Desktop/Jedi/sent/SENT2.mp3", "/home/pi/Desktop/Jedi/sent/SENT4.mp3", "/home/pi/Desktop/Jedi/sent/SENT5.mp3", "/home/pi/Desktop/Jedi/sent/SENT17.mp3", "/home/pi/Desktop/Jedi/sent/SENT20.mp3"]
-procs = ["/home/pi/Desktop/Jedi/proc/PROC2.mp3", "/home/pi/Desktop/Jedi/proc/PROC3.mp3", "/home/pi/Desktop/Jedi/proc/PROC5.mp3", "/home/pi/Desktop/Jedi/proc/PROC13.mp3", "/home/pi/Desktop/Jedi/proc/PROC15.mp3"]
+hums = ["Jedi/hum/HUM1.mp3", "Jedi/hum/HUM7.mp3", "Jedi/hum/HUM13.mp3", "Jedi/hum/HUM17.mp3","Jedi/hum/HUM23.mp3"]
+screams = ["Jedi/scream/SCREAM1.mp3", "Jedi/scream/SCREAM2.mp3", "Jedi/scream/SCREAM3.mp3", "Jedi/scream/SCREAM4.mp3"]
+sents = ["Jedi/sent/SENT2.mp3", "Jedi/sent/SENT4.mp3", "Jedi/sent/SENT5.mp3", "Jedi/sent/SENT17.mp3", "Jedi/sent/SENT20.mp3"]
+procs = ["Jedi/proc/PROC2.mp3", "Jedi/proc/PROC3.mp3", "Jedi/proc/PROC5.mp3", "Jedi/proc/PROC13.mp3", "Jedi/proc/PROC15.mp3"]
 
 # Initialize the pygame window. Key inputs will be picked up by
 # it and get translated into commands.
@@ -178,13 +178,13 @@ try:
                     clearLCDLine()
                     lcd.putstr("SOUND: CANTINA")
                     pygame.mixer.init()
-                    pygame.mixer.music.load("/home/pi/Desktop/Jedi/mix/CANTINA.mp3")
+                    pygame.mixer.music.load("Jedi/mix/CANTINA.mp3")
                     pygame.mixer.music.play()
                 
                 elif event.key == pygame.K_6:
                     print("pygame.K_6 | ANNOYED")
                     pygame.mixer.init()
-                    pygame.mixer.music.load("/home/pi/Desktop/Jedi/mix/ANNOYED.mp3")
+                    pygame.mixer.music.load("Jedi/mix/ANNOYED.mp3")
                     pygame.mixer.music.play()
                     
                 elif event.key == pygame.K_7:
@@ -192,7 +192,7 @@ try:
                     clearLCDLine()
                     lcd.putstr("SOUND: SH.CIRC")
                     pygame.mixer.init()
-                    pygame.mixer.music.load("/home/pi/Desktop/Jedi/mix/SHORTCKT.mp3")
+                    pygame.mixer.music.load("Jedi/mix/SHORTCKT.mp3")
                     pygame.mixer.music.play()
                 
                 # R2 moves slowly with the joystick, but can go faster with L2 and R2.
@@ -217,7 +217,7 @@ try:
                 elif event.key == pygame.K_9:
                     print("pygame.K_9 | Audio Set 1")
                     pygame.mixer.init()
-                    pygame.mixer.music.load("/home/pi/Desktop/Sunshine.ogg")
+                    pygame.mixer.music.load("Sunshine.ogg")
                     pygame.mixer.music.play()
                     
                 elif event.key == pygame.K_0:
