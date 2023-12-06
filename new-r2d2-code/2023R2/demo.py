@@ -1,5 +1,18 @@
-import pygame
 import sys
+import pygame
+import time
+import atexit
+# Communicate with serial ports on Raspberry Pi.
+import serial
+import random
+# Motor controllers for the feet and head, respectively.
+import MD49
+from pysabertooth import Sabertooth
+# Stuff for the LCD display.
+from lcd_api import LcdApi
+from i2c_lcd import I2cLcd
+#import rf24 libraries
+from pyrf24 import RF24, RF24_PA_LOW
 
 pygame.init()
 
@@ -28,6 +41,26 @@ joystick = pygame.joystick.Joystick(0)
 joystick.init()
 
 print(f"Joystick Name: {joystick.get_name()}")
+
+# Define LCD screen
+I2C_ADDR = 0x27
+I2C_NUM_ROWS = 2
+I2C_NUM_COLS = 16
+
+lcd = I2cLcd(1, I2C_ADDR, I2C_NUM_ROWS, I2C_NUM_COLS)
+# Testing LCD
+lcd.clear()
+lcd.putstr("R2D2 Online!")
+lcd.move_to(0,1)
+
+# Function for clearing the second line of the display.
+def clearLCDLine():
+    i = 0
+    while i < I2C_NUM_COLS:
+        lcd.move_to(i, 1)
+        lcd.putchar(" ")
+        i += 1
+    lcd.move_to(0, 1)
 
 try:
     while True:
@@ -89,29 +122,5 @@ try:
                     soundChoice = random.randint(0, 3)
                     pygame.mixer.music.load(screams[soundChoice])
                     pygame.mixer.music.play()
-                         
-                elif event.button == 8:
-                    print("SELECT | CANTINA")
-                    clearLCDLine()
-                    lcd.putstr("SOUND: CANTINA")
-                    pygame.mixer.init()
-                    pygame.mixer.music.load("Jedi/mix/CANTINA.mp3")
-                    pygame.mixer.music.play()
-                
-                elif event.button == 10:
-                    print("PS button | ANNOYED")
-                    pygame.mixer.init()
-                    pygame.mixer.music.load("Jedi/mix/ANNOYED.mp3")
-                    pygame.mixer.music.play()
-                    
-                elif event.button == 9:
-                    print("START | SHORT CIRCUIT")
-                    clearLCDLine()
-                    lcd.putstr("SOUND: SH.CIRC")
-                    pygame.mixer.init()
-                    pygame.mixer.music.load("Jedi/mix/SHORTCKT.mp3")
-                    pygame.mixer.music.play()
-
-except KeyboardInterrupt:
-    pygame.quit()
-    sys.exit()
+except Exception as ex:
+    print(ex)            
