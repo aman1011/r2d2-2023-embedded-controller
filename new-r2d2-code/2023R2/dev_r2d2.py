@@ -19,6 +19,7 @@ from lcd_api import LcdApi
 from i2c_lcd import I2cLcd
 #import rf24 libraries
 from pyrf24 import RF24, RF24_PA_LOW
+import sys
 
 #List of selected sounds
 hums = ["Jedi/hum/HUM1.mp3", "Jedi/hum/HUM7.mp3", "Jedi/hum/HUM13.mp3", "Jedi/hum/HUM17.mp3","Jedi/hum/HUM23.mp3"]
@@ -58,9 +59,9 @@ try:
     print(motors)
     motors.DisableTimeout()
 
-    motors.SetSpeed1(140)
-    motors.SetSpeed2Turn(140)
-    time.sleep(2)
+    motors.SetSpeed1(240)
+    motors.SetSpeed2Turn(240)
+    time.sleep(12)
     motors.SetSpeed1(128)
     motors.SetSpeed2Turn(128)
         #motors.SetSpeed2Turn(128)

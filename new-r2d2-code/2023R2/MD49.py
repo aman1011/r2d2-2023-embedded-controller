@@ -1,4 +1,3 @@
-
 import serial
 from time import sleep
 from    struct  import pack, unpack
@@ -70,19 +69,19 @@ class MotorBoardMD49 :
 
     # ----------------------------------------------------------------------------
 
-    # def _rxRet(self, retSize) :
-    #    ret = b''
-    #    ok  = False
-    #    for i in range(100) :
-    #        buf = self._uart.read(size=1) #might not work?
-    #        if buf is not None :
-    #            ret += buf
-    #            if len(ret) == retSize :
-    #                ok = True
-    #                break
-    #        print(ret)
-    #        sleep(10/1000)
-    #    return ret if ok else None
+    def _rxRet(self, retSize) :
+        ret = b''
+        ok  = False
+        for i in range(100) :
+            buf = self._uart.read(size=1) #might not work?
+            if buf is not None :
+                ret += buf
+                if len(ret) == retSize :
+                    ok = True
+                    break
+            print(ret)
+            sleep(10/1000)
+        return ret if ok else None
 
     # # ----------------------------------------------------------------------------
 
@@ -169,12 +168,12 @@ class MotorBoardMD49 :
 
     # # ----------------------------------------------------------------------------
 
-    # def GetVersion(self) :
-    #     if self._txCmd(MotorBoardMD49.GET_VERSION) :
-    #         ret = self._rxRet(1)
-    #         if ret is not None :
-    #             return unpack('B', ret)[0]
-    #     return None
+    def GetVersion(self) :
+         if self._txCmd(MotorBoardMD49.GET_VERSION) :
+             ret = self._rxRet(1)
+             if ret is not None :
+                 return unpack('B', ret)[0]
+         return None
 
     # # ----------------------------------------------------------------------------
 
@@ -230,6 +229,8 @@ class MotorBoardMD49 :
             fmt = 'b'
             if value < -128 or value > 127 :
                 return False
+        #print(f"fmt is {fmt} ....")
+        #print(f"value is {value} ....")
         return self._txCmd(MotorBoardMD49.SET_SPEED_1, pack(fmt, value))
 
     # ----------------------------------------------------------------------------
