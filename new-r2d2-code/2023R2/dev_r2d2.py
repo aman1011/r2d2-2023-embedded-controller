@@ -27,39 +27,43 @@ screams = ["/home/pi/Desktop/r2d2-2023-embedded-controller/new-r2d2-code/2023R2/
 sents = ["/home/pi/Desktop/r2d2-2023-embedded-controller/new-r2d2-code/2023R2/Jedi/sent/SENT2.mp3", "/home/pi/Desktop/r2d2-2023-embedded-controller/new-r2d2-code/2023R2/Jedi/sent/SENT4.mp3", "/home/pi/Desktop/r2d2-2023-embedded-controller/new-r2d2-code/2023R2/Jedi/sent/SENT5.mp3", "/home/pi/Desktop/r2d2-2023-embedded-controller/new-r2d2-code/2023R2/Jedi/sent/SENT17.mp3", "/home/pi/Desktop/r2d2-2023-embedded-controller/new-r2d2-code/2023R2/Jedi/sent/SENT20.mp3"]
 procs = ["/home/pi/Desktop/r2d2-2023-embedded-controller/new-r2d2-code/2023R2/Jedi/proc/PROC2.mp3", "/home/pi/Desktop/r2d2-2023-embedded-controller/new-r2d2-code/2023R2/Jedi/proc/PROC3.mp3", "/home/pi/Desktop/r2d2-2023-embedded-controller/new-r2d2-code/2023R2/Jedi/proc/PROC5.mp3", "/home/pi/Desktop/r2d2-2023-embedded-controller/new-r2d2-code/2023R2/Jedi/proc/PROC13.mp3", "/home/pi/Desktop/r2d2-2023-embedded-controller/new-r2d2-code/2023R2/Jedi/proc/PROC15.mp3"]
 
+# Define LCD screen
+I2C_ADDR = 0x27
+I2C_NUM_ROWS = 2
+I2C_NUM_COLS = 16
+
+lcd = I2cLcd(1, I2C_ADDR, I2C_NUM_ROWS, I2C_NUM_COLS)
+# Testing LCD
+lcd.clear()
+lcd.putstr("Start R2D2")
+time.sleep(1)
+lcd.clear()
+lcd.putstr("R2D2 NSCC!")
+lcd.move_to(0,1)
+
 # Initialize the pygame window. Key inputs will be picked up by
 # it and get translated into commands.
 pygame.init()
 screen = pygame.display.set_mode((400,400))
 
-
 # Set up the joystick
 pygame.joystick.init()
 joystick_count = pygame.joystick.get_count()
-joystick = None
-if not joystick_count:
-	print("No controller found. Waiting for controller to be connected ...")
-	joystick_connected = False
-		
-	while not joystick_connected:
-		for event in pygame.event.get():
-			if event.type == pygame.JOYDEVICEADDED:
-				time.sleep(2)
-				# This event will be generated when the program starts for every
-				# joystick, filling up the list without needing to create them manually.
-				joy = pygame.joystick.Joystick(event.device_index)
-				joystick = joy
-				joystick_connected = True
-				print("Connected the controller ....")
-				print(f"Event device index {event.device_index} ....")
-				print(f"Joystick {joystick} ....")
-				
-else:
-	print("Looks like the controller was connected")
-	joystick = pygame.joystick.Joystick(0)
-	print(f"Joystick {joystick} ....")
+joystick = 0
 
+if joystick == 0:
+	print("No controller found. Waiting for controller to be connected ...")
+	print("going to wait for 2 second")
+	while joystick == 0:
+		print("waiting for 2 second")
+		pygame.event.get()
+		joystick = pygame.joystick.get_count()
+		time.sleep(2)		
+	
+	lcd.putstr("CTRL CONN")
+joystick = pygame.joystick.Joystick(0)
 joystick.init()
+print(f"Joystick Initialized ....")
 
 # Set the serial port and baud rate based on your configuration
 serial_port = '/dev/ttyS0'  # For Raspberry Pi GPIO serial
@@ -97,6 +101,8 @@ try:
 except Exception as ex:
     print(f"Could not connect to sabretooth {ex}")
     sys.exit(0)
+    
+print("After sabretooth")
 
 # Attempt to establish a link with the head via bluetooth.
 #arduinoHead = RF24(22, 0)
@@ -106,19 +112,7 @@ except Exception as ex:
 #arduinoHead.open_tx_pipe(headAddress)
 #arduinoHead.print_details()
 
-# Define LCD screen
-I2C_ADDR = 0x27
-I2C_NUM_ROWS = 2
-I2C_NUM_COLS = 16
 
-lcd = I2cLcd(1, I2C_ADDR, I2C_NUM_ROWS, I2C_NUM_COLS)
-# Testing LCD
-lcd.clear()
-lcd.putstr("Start R2D2")
-time.sleep(2)
-lcd.clear()
-lcd.putstr("R2D2 NSCC!")
-lcd.move_to(0,1)
 
 # Function for clearing the second line of the display.
 def clearLCDLine():
@@ -143,8 +137,6 @@ def translate(value, leftMin, leftMax, rightMin, rightMax):
     return rightMin + (valueScaled * rightSpan)
     
 
-time.sleep(1)
-
 # Initialize variables that describe the states of flaps and arms and stuff
 # openFlap1 = True
 # openFlap2 = True
@@ -152,19 +144,20 @@ time.sleep(1)
 # openFlap4 = True
 #joystick = 0
 
+print("before init")
 forwardValue = 128
 turnValue = 0
-
 deadzone = 0.02
+print("after init and before try")
+
 
 try:
     # An event loop in Pygame is where the majority of the program happens.
     # This is where we take key inputs and make the robot do things.
+    print("Entering in the while loop")
     while True:
         for event in pygame.event.get():
-			#print(f"joystick {joystick}")
             print(f"Event is {event} .... ")
-            print(f"joystick is {joystick} ....")
             #joystick hotplug handling
             if event.type == pygame.JOYDEVICEADDED:
                 # This event will be generated when the program starts for every
@@ -184,7 +177,7 @@ try:
                 joystick = 0
                 try:
                     clearLCDLine()
-                    print("DisCONNE")
+                    print("Disconnected controller ....")
                     clearLCDLine()
                     lcd.putstr("CTRL DCONN")
                 except Exception as ex:
@@ -342,9 +335,7 @@ try:
                     motors.SetSpeed2Turn(int(rightMotorValue))
                     motors.SetSpeed1(int(leftMotorValue))
                     saber.drive(1, int(headValue))
-
-                
-                    
+    
                     
             # Kill everything when you press X.
             if event.type == pygame.QUIT:
